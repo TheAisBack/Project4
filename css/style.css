@@ -18,8 +18,37 @@ body, button, input, select, textarea {
 a {
   color: #12C;
 }
-a:visited {
-  color: #61C;
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    text-shadow: none !important;
+    filter: none !important;
+    -ms-filter: none !important;
+  }
+  a, a:visited {
+    color: #444 !important;
+    text-decoration: underline;
+  }
+  a[href]:after { 
+    content: " (" attr(href) ")";
+  }
+  tr, img {
+    page-break-inside: avoid;
+  }
+  img {
+    max-width: 100% !important;
+  }
+  @page {
+    margin: 0.5cm;
+  }
+  p, h2, h3 { 
+    orphans: 3;
+    widows: 3;
+  }
+  h2, h3 {
+    page-break-after: avoid;
+  }
 }
 a:focus {
   outline: thin dotted;
@@ -38,10 +67,6 @@ pre, code {
 ul, ol {
   margin: 1em 0;
   padding: 0 0 0 20px;
-}
-img {
-  border: 0;
-  max-width: 100%;
 }
 body {
   background: #fff;
