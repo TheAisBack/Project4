@@ -2,6 +2,7 @@
 1. Minimized photos to get a better experience. 
 2. Put the CSS files in the index.html to increase the experience as well.
 3. Added the JS to file, to increase experience.
+4. Updated pizza.html file to make sure it functions properly.
 
 ## Website Performance Optimization portfolio project
 
