@@ -14,3 +14,7 @@
 14. edited onScroll() with scroll and got rid of some functions
 15. Created a function called pizzaCreator and created a function called pizzaFit to help the code function inside html.
 16. the window functions help with scrolling through the html file and resizing the pizza.
+
+To Run the Application, download the zip file or open the application at theaisback.github.io, so that we can see the application on page speed. Open up the index.html file. Open the cookie monsters link to jump into the pizza section and have fun!
+
+Alan
