@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-
 <body>
   <div class="container">
     <div id="header" class="row">
@@ -139,12 +138,12 @@
   </div>
   <!--<script type="text/javascript" src="js/main.js"></script>
   <link rel="stylesheet" href="css/bootstrap-grid.css">-->
-    <style>* {-webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box;} body {font-family: "Trebuchet MS", Helvetica, sans-serif; background: black;} input {background: grey; font-size: 18px;} form {display: inline-block;} .centered {text-align: center;} #pizzaSize {font-weight: 800;} .mover {position: fixed;width: 256px; z-index: -1; transform: translateZ(0); left: 0px; backface-visibility: hidden; perspective: 1000;}.randomPizzaContainer { float: left; display: flex; height:325px;} .randomPizzaContainer:after {content: ""; display: table;clear: both;}.container {background-color: rgba(240, 60, 60, 0.8);} #randomPizzas.smallPizzas .randomPizzaContainer {width: 20%;} #randomPizzas.mediumPizzas .randomPizzaContainer {width: 35%;} #randomPizzas.largePizzas .randomPizzaContainer {width: 50%;} .pizzaSmall {width: 20%;} .pizzaMedium {width: 35%;} .pizzaLarge {width: 50%;}
+  <style>* {-webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box;} body {font-family: "Trebuchet MS", Helvetica, sans-serif; background: black;} input {background: grey; font-size: 18px;} form {display: inline-block;} .centered {text-align: center;} #pizzaSize {font-weight: 800;} .mover {position: fixed;width: 256px; z-index: -1; transform: translateZ(0); left: 0px; backface-visibility: hidden; perspective: 1000;}.randomPizzaContainer { float: left; display: flex; height:325px;} .randomPizzaContainer:after {content: ""; display: table;clear: both;}.container {background-color: rgba(240, 60, 60, 0.8);} #randomPizzas.smallPizzas .randomPizzaContainer {width: 20%;} #randomPizzas.mediumPizzas .randomPizzaContainer {width: 35%;} #randomPizzas.largePizzas .randomPizzaContainer {width: 50%;} .pizzaSmall {width: 20%;} .pizzaMedium {width: 35%;} .pizzaLarge {width: 50%;}
   </style>
   <style>
-    img {
-  vertical-align: middle;
-}
+  img {
+    vertical-align: middle;
+  }
 .img-responsive {
   display: block;
   width: 100% \9;
@@ -1097,7 +1096,7 @@ var pizzaElementGenerator = function(i) {
   pizzaDescriptionContainer = document.createElement("div");
 
   pizzaContainer.classList.add("randomPizzaContainer");
-  pizzaContainer.id = "pizza" + i;                // gives each pizza element a unique id
+  pizzaContainer.id = "pizza" + i;
   pizzaImageContainer.classList.add("col-md-6");
 
   pizzaImage.src = "images/pizza.png";
@@ -1120,25 +1119,31 @@ var pizzaElementGenerator = function(i) {
 };
 'use strict';
 var resizePizzas = function(size) { 
-  window.performance.mark("mark_start_resize");   // User Timing API function
-
-  var pizzaRandomDiv = document.getElementById("randomPizzas");
+  window.performance.mark("mark_start_resize");
+  function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.getElementById("pizzaSize").innerHTML = "Small"; // Changed from querySelector to much faster getElementByID - http://jsperf.com/getelementbyid-vs-queryselector/137
-        pizzaRandomDiv.className = "row smallPizzas"; // using instead of add and remove class for faster operations. Usually would add/remove classes.
-        break;
+        document.querySelector("#pizzaSize").innerHTML = "Small";
+        return "small";
       case "2":
-        document.getElementById("pizzaSize").innerHTML = "Medium";
-        pizzaRandomDiv.className = "row mediumPizzas";
-        break;
+        document.querySelector("#pizzaSize").innerHTML = "Medium";
+        return "medium";
       case "3":
-        document.getElementById("pizzaSize").innerHTML = "Large";
-        pizzaRandomDiv.className  = "row largePizzas";
-        break;
+        document.querySelector("#pizzaSize").innerHTML = "Large";
+        return "large";
       default:
         console.log("bug in changeSliderLabel");
     }
+  }
+  var dx = changeSliderLabel(size);
+  function changePizzaSizes(size) {
+    var allPizzaContainers = document.getElementsByClassName("randomPizzaContainer");
+    for (var i = 0; i < allPizzaContainers.length; i++) {
+      allPizzaContainers[i].className = "randomPizzaContainer " + dx;
+    }
+  }
+
+  changePizzaSizes(size);
   window.performance.mark("mark_end_resize");
   window.performance.measure("measure_pizza_resize", "mark_start_resize", "mark_end_resize");
   var timeToResize = window.performance.getEntriesByName("measure_pizza_resize");
@@ -1147,25 +1152,16 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
-// This for-loop actually creates and appends all of the pizzas when the page loads
 for (var i = 2; i < 100; i++) {
   var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
-
-
-// User Timing API again. These measurements tell you how long it took to generate the initial pizzas
 window.performance.mark("mark_end_generating");
 window.performance.measure("measure_pizza_generation", "mark_start_generating", "mark_end_generating");
 var timeToGenerate = window.performance.getEntriesByName("measure_pizza_generation");
 console.log("Time to generate pizzas on load: " + timeToGenerate[0].duration + "ms");
-
-// Iterator for number of times the pizzas in the background have scrolled.
-// Used by updatePositions() to decide when to log the average time per frame
 var frame = 0;
-
-// Logs the average amount of time per 10 frames needed to move the sliding background pizzas on scroll.
-function logAverageFrame(times) {   // times is the array of User Timing measurements from updatePositions()
+function logAverageFrame(times) {
   var numberOfEntries = times.length;
   var sum = 0;
   for (var i = numberOfEntries - 1; i > numberOfEntries - 11; i--) {
@@ -1173,32 +1169,18 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   }
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
-
-var updatePositionsTick = false;
-
-function scrolled() {
-  requestTick()
-}
-function requestTick() {
-  if (!ticking) {
-    requestAnimationFrame(updatePositions);
-  }
-  ticking = true;
-}
 function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
+  var theScrollTop = document.body.scrollTop;
   var items = document.getElementsByClassName('mover');
-  var len = items.length;
-  var phaseInt = document.body.scrollTop / 1250;
 
-  for (var i = 0; i < len; i++) {
-    var move = Math.sin(phaseInt + (i % 5)) * 100;
-    items[i].style.transform = "translateX(" + move + "px)";
+  for (var i = 0; i < items.length; i++) {
+    var phase = Math.sin((theScrollTop / 1250) + (i % 5));
+    var newPos = items[i].basicLeft + 100 * phase - 600 + 'px';
+    items[i].style.transform = "translateX(" + newPos + ")";
   }
-
-  updatePositionsTick = false;
   window.performance.mark("mark_end_frame");
   window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
   if (frame % 10 === 0) {
@@ -1206,35 +1188,23 @@ function updatePositions() {
     logAverageFrame(timesToUpdatePosition);
   }
 }
-
-function pizzaCreator() {
-  var cols = 8;
+window.addEventListener('scroll', updatePositions);
+document.addEventListener('DOMContentLoaded', function() {
+  var cols = 6;
   var s = 256;
-  var windowHeight = (window.innerHeight || document.documentElement.clientHeight || 1080);
-  var bgPizzasToGen = Math.ceil(windowHeight / s) * cols;
-
-  for (var i = 0; i < bgPizzasToGen; i++) {
+  var mPizzas = document.getElementById("movingPizzas1");
+  for (var i = 0; i < 30; i++) {
     var elem = document.createElement('img');
-    var left = (i % cols) * s;
-    elem.className = 'mover'
-    elem.src = "images/pizza-min.png";
+    elem.className = 'mover';
+    elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
-    elem.style.left = left + 'px';
-    elem.basicLeft = left;
+    elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.getElementById("movingPizzas1").appendChild(elem);
+    mPizzas.appendChild(elem);
   }
   updatePositions();
-};
-
-function pizzaFit() {
-  document.getElementById("movingPizzas1").innerHTML = "";
-  pizzaCreator();
-}
-window.addEventListener('scroll', scrolled);
-document.addEventListener('DOMContentLoaded', pizzaCreator);
-window.addEventListener('resize', pizzaFit);
+});
   </script>
 </body>
 
