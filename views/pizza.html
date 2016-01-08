@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+<body> <!--Html Main-->
   <div class="container">
     <div id="header" class="row">
       <div class="col-md-6">
@@ -138,7 +138,7 @@
   </div>
   <!--<script type="text/javascript" src="js/main.js"></script>
   <link rel="stylesheet" href="css/bootstrap-grid.css">-->
-  <style>
+  <style>/** Main CSS **/
   * {
     -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box;
   }
@@ -964,7 +964,7 @@
     transform: translate3d(0, 0, 0);
   }
   </style>
-  <script>
+  <script> //JavaScript Main
   var pizzaIngredients = {};
   pizzaIngredients.meats = ["Pepperoni", "Sausage", "Fennel Sausage", "Spicy Sausage", "Chicken", "BBQ Chicken", "Chorizo", "Chicken Andouille", "Salami", "Tofu", "Bacon", "Canadian Bacon", "Proscuitto", "Italian Sausage", "Ground Beef", "Anchovies", "Turkey", "Ham", "Venison", "Lamb", "Duck", "Soylent Green", "Carne Asada", "Soppressata Picante", "Coppa", "Pancetta", "Bresola", "Lox", "Guanciale", "Chili", "Beef Jerky", "Pastrami", "Kielbasa", "Scallops", "Filet Mignon"
   ];
@@ -1141,32 +1141,46 @@
     var pizzaContainer,             // contains pizza title, image and list of ingredients
     pizzaImageContainer,        // contains the pizza image
     pizzaImage,                 // the pizza image itself
+    
     pizzaDescriptionContainer,  // contains the pizza title and list of ingredients
     pizzaName,                  // the pizza name itself
+    
     ul;                         // the list of ingredients
+    
     pizzaContainer  = document.createElement("div");
+    
     pizzaImageContainer = document.createElement("div");
     pizzaImage = document.createElement("img");
+    
     pizzaDescriptionContainer = document.createElement("div");
+    
     pizzaContainer.classList.add("randomPizzaContainer");
     pizzaContainer.id = "pizza" + i;
+    
     pizzaImageContainer.classList.add("col-md-6");
     pizzaImage.src = "images/pizza.png";
     pizzaImage.classList.add("img-responsive");
     pizzaImageContainer.appendChild(pizzaImage);
+    
     pizzaContainer.appendChild(pizzaImageContainer);
+    
     pizzaDescriptionContainer.classList.add("col-md-6");
+    
     pizzaName = document.createElement("h4");
     pizzaName.innerHTML = randomName();
+    
     pizzaDescriptionContainer.appendChild(pizzaName);
+    
     ul = document.createElement("ul");
     ul.innerHTML = makeRandomPizza();
+    
     pizzaDescriptionContainer.appendChild(ul);
     pizzaContainer.appendChild(pizzaDescriptionContainer);
+    
     return pizzaContainer;
   };
   'use strict';
-  var resizePizzas = function(size) { 
+  var resizePizzas = function(size) { // Stating which size of pizza
     window.performance.mark("mark_start_resize");
     function changeSliderLabel(size) {
       switch(size) {
@@ -1183,13 +1197,31 @@
         console.log("bug in changeSliderLabel");
       }
     }
-    var dx = changeSliderLabel(size);
-    function changePizzaSizes(size) {
-      var allPizzaContainers = document.getElementsByClassName("randomPizzaContainer");
-      for (var i = 0; i < allPizzaContainers.length; i++) {
-        allPizzaContainers[i].className = "randomPizzaContainer " + dx;
-      }
+  changeSliderLabel(size); 
+  function changePizzaSizes(size) {// This function helps to resize the pizzas when using the scroller
+    var newWidth;
+    switch(size) {
+      case "1":
+        newWidth = 25;
+        break;
+      case "2":
+        newWidth = 33.3;
+        break;
+      case "3":
+        newWidth = 50;
+        break;
+      default:
+        console.log("bug in sizeSwitcher");
+    }    
+    // we use this wep API because it is faster than the querySelectorAll
+    var randomPizzas = document.getElementsByClassName('randomPizzaContainer');
+    var lenRandomPizzas = randomPizzas.length;
+    for (var i = 0; i < lenRandomPizzas; i++) {
+      randomPizzas[i].style.width = newWidth + "%";
     }
+  }
+
+
     changePizzaSizes(size);
     window.performance.mark("mark_end_resize");
     window.performance.measure("measure_pizza_resize", "mark_start_resize", "mark_end_resize");
@@ -1233,7 +1265,7 @@
   }
   window.addEventListener('scroll', updatePositions);
   document.addEventListener('DOMContentLoaded', function() {
-    var cols = 6;
+    var cols = 8;
     var s = 256;
     var mPizzas = document.getElementById("movingPizzas1");
     for (var i = 0; i < 30; i++) {
@@ -1241,7 +1273,7 @@
       elem.className = 'mover';
       elem.src = "images/pizza.png";
       elem.style.height = "100px";
-      elem.style.width = "73.333px";
+      elem.style.width = "100px";
       elem.basicLeft = (i % cols) * s;
       elem.style.top = (Math.floor(i / cols) * s) + 'px';
       mPizzas.appendChild(elem);
